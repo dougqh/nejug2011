@@ -1,0 +1,103 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 A JIT Compiler for Android's Dalvik VM\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+{\field{\*\fldinst{HYPERLINK "http://www.youtube.com/watch?v=Ls0tM-c4Vfo"}}{\fldrslt \cf0 http://www.youtube.com/watch?v=Ls0tM-c4Vfo}}\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+{\field{\*\fldinst{HYPERLINK "http://www.android-app-developer.co.uk/android-app-development-docs/android-jit-compiler-androids-dalvik-vm.pdf"}}{\fldrslt \cf0 http://www.android-app-developer.co.uk/android-app-development-docs/android-jit-compiler-androids-dalvik-vm.pdf}}\
+\
+JIT has a self-verification mode\
+\
+Very compact representation\
+Dalvik interpreter twice as fast as traditional Java interpreter\
+33% spent interpreted on average case\
+\
+Interpreter requires less memory than native\
+More compact than ARM\
+\
+JIT axes\'85\
+When: launch (AOT), method invoke time, instruction fetch\
+What: whole program, library, page, method, trace, single instruction\
+\
+JIT needs to fit in small amount of memory\
+Needs to work with process container security model\
+	??? Quote - Other JIT styles do not allow for this ???\
+Low warm-up time - immediate speed boost\
+\
+Method JIT vs Trace JIT\
+\
+Method JIT\
+	Pros\
+	- identify hot methods\
+	- nice optimization window\
+	- easy to transition between interpreter and\
+	   compiled code at method boundaries\
+\
+	Cons\
+	- method also contains cold code\
+	- takes a lot of memory\
+	- flow analysis of method is more complicated & memory intensive\
+	- larger delay before the benefit is seen\
+\
+Trace JIT\
+	Pros\
+	- identify hot chunks (can include branches and method calls)\
+              - but presently does not span methods\
+	- optimize the "hottest" code\
+	- more tightly integrated with the interpreter\
+	  - translated code does not deal with exceptional cases \
+	  - puts things back and lets the interpreter sort it out\
+	- rapid return on investment\
+\
+	Cons\
+	- less data to inform the compilation (only data from the trace)\
+	- switching back and forth between JIT and interpreter more frequently\
+              incurs overhead\
+            - cannot share across processes\
+\
+What is "hot"?\
+	Method JIT - 8% is worth compiling\
+	Trace JIT - 2% is worth compiling - (so better ROI)\
+\
+Need immediate payoff -- otherwise, user might discard a newly downloaded application before they ran it long enough to see the benefit\
+\
+In the future, may still use method JIT in background in the future?\
+\
+Look for potential trace heads\
+	- after found a hot head\
+	- run interpreter in single step and build list of instructions to translate\
+	- at some point stop, send list of instructions to compiler thread\
+	- compiler thread will fill the translation cache\
+\
+Translation cache per process\
+	- threads within a process share the cache\
+	- simple traces - 1 or 2 basic blocks (at this time)\
+	  (figure out how basic blocks are identified as it relates to exceptions)\
+	- local optimizations\
+	- loop optimizations\
+\
+Nice benchmarks - relative performance - and - memory usage\
+\
+Future directions\
+	- method inlining\
+	- trace extension (more than 2 basic blocks)\
+	- persistence profile information\
+	- off-line trace coalescing (do something different when charging)\
+	- off-line method translation (do something different when charging) \
+	- tuning, tuning, and more tuning\
+\
+OProfile can provide insight into the workload\
+Use special Dalvik build to analyze code quality\
+\
+Peak into Code Cache Land\
+kill -12 <pid> (only works debug build of Dalvik)\
+100-150 microsecs for a JIT\
+\
+Traces are per process now -- even for shared libraries\
+ - generate thumb or thumb2\
+ - also selects based on presence of FP support\
+}

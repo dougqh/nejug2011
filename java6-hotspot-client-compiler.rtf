@@ -1,0 +1,64 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 Design of the Java HotSpot Client Compiler for Java 6\
+{\field{\*\fldinst{HYPERLINK "http://www.stanford.edu/class/cs343/resources/java-hotspot.pdf"}}{\fldrslt http://www.stanford.edu/class/cs343/resources/java-hotspot.pdf}}\
+\
+Page 5\
+Decent diagram of the client compiler in Java 6\
+bytecode -> HIR -> LIR -> machine code\
+\
+Basic blocks in Java 6 - do include method calls\
+(That is exceptions do not terminate the basic block)\
+\
+HIR - High-level Intermediate Representation\
+HIR is a graph-based representation\
+HIR is SSA - Static Single Assignment (needs further research)\
+\
+LIR - Low-level intermediate Representation\
+LIR is similar to three operand machine code\
+LIR operations operate on virtual registers\
+\
+CFG - control flow graph\
+\
+Page 7 - Nice diagram of basic blocks in Java\
+\
+SSA relates to phi functions - phi functions merge different values of the same variable (e.g. loop counters)\
+\
+Methods with a size < 35 bytes are inlined\
+  This size decreases with each nested inlining\
+\
+Class Hierarchy Analysis (CHA)\
+\
+Field store kills all loads of the same field\
+Consequently, method calls kill all memory loads because they could have change any field\
+\
+Page 9 - LIR is close to three-operand machine code, augmented with higher level instructions\
+\
+LIR is not SSA - phi functions are resolved via register moves - whatever that means?\
+\
+LIR operands can be virtual registers, physical registers, memory addresses, stack slots, or constants\
+\
+Server compiler uses graph-coloring algorithm to do register allocation\
+Client compiler uses linear scan\
+\
+Linear scan calculates usage intervals for each register\
+  Revisit section 2.4 on the function of the linear scan register allocator\
+\
+The compiler generates its own table of exceptions (which can include exception cases not explicitly stated in the byte code)\
+When an exception is raised, this table is scanned to find the appropriate handler\
+\
+Page 11 into 12\
+Nice example of CHA and speculative inlining\
+\
+Page 13 into 14\
+Nice explanation of escape analysis\
+\
+Page 16 into 17\
+Nice explanation of object colocation\
+\
+Page 17\
+Array Bounds Check Elimination - mentions use of dominator tree in the algorithm}

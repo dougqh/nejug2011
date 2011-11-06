@@ -1,0 +1,148 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red3\green0\blue198;}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\ql\qnatural
+
+\f0\fs26 \cf0 Dedexer Presentation\
+{\field{\*\fldinst{HYPERLINK "http://www.slideshare.net/paller/understanding-the-dalvik-bytecode-with-the-dedexer-tool"}}{\fldrslt http://www.slideshare.net/paller/understanding-the-dalvik-bytecode-with-the-dedexer-tool}}\
+	- Good information on optimization process\
+\
+The Google Android Stack\
+{\field{\*\fldinst{HYPERLINK "http://www.slideshare.net/paller/understanding-the-dalvik-bytecode-with-the-dedexer-tool"}}{\fldrslt http://www.slideshare.net/paller/understanding-the-dalvik-bytecode-with-the-dedexer-tool}}\
+	- Interesting bits - including 4-bit condition prefix\
+	- Thumb vs non-thumb Android mode\
+	- ODEX b/c Flash is relatively plentiful\
+	- Intent stack diagram\
+	- Security model\
+	- Verification\
+\
+Android: Evolution or Revolution\
+{\field{\*\fldinst{HYPERLINK "http://www.slideshare.net/sanjivmalik/cfakepathandroid-sanjiv"}}{\fldrslt http://www.slideshare.net/sanjivmalik/cfakepathandroid-sanjiv}}\
+	- Decent coverage of each of the services\
+	- Very nice plaform initialization diagram\
+	- Stats for first phone\
+\
+Anatomy of Android\
+{\field{\*\fldinst{HYPERLINK "http://www.slideshare.net/viswanath7/anatomy-of-android-google-io"}}{\fldrslt http://www.slideshare.net/viswanath7/anatomy-of-android-google-io}}\
+	- Nice sequence diagram of Binder interaction\
+	- Nice step through of start-up process\
+	- Nice layer interaction diagrams\
+{\field{\*\fldinst{HYPERLINK "http://www.slideshare.net/marakana99/android-internals?src=related_normal&rel=3576173"}}{\fldrslt http://www.slideshare.net/marakana99/android-internals?src=related_normal&rel=3576173}}\
+	- Same diagrams as above - recreated\
+	- TraceView?\
+\
+Alternate Android Internals\
+{\field{\*\fldinst{HYPERLINK "http://www.slideshare.net/opersys/android-internals"}}{\fldrslt http://www.slideshare.net/opersys/android-internals}}\
+	- Nice Androidisms\
+	- /proc/binder\
+Slide flow\
+\'a0Layers (emphasize Binder / Dalvik ) - (less emphasis on Power Management)\
+\'a0 \'a0 \'a0 \'a0(some mention of FastPath JNI)\
+\'a0Boot Order\
+\'a0Zygote\
+\'a0Installation Process\
+\'a0 \'a0dexopt\
+\'a0 \'a0 \'a0 \'a0userID\
+\'a0 \'a0 \'a0 \'a0(show SQLite)\
+\
+\'a0Dalvik\
+\'a0 \'a0Meeting environment constraints\
+\'a0 \'a0 \'a0 \'a0Bytecode\
+\'a0 \'a0 \'a0 \'a0JIT\
+\'a0 \'a0 \'a0 \'a0GC\
+\
+\'a0Binder Example - with Service communication\
+\
+Stream of consciousness\
+\'a0- DEX vs ODEX - including visualization\
+\'a0- JAR vs DEX - including visualization\
+\'a0- Observe Binder in action\
+\'a0- Enumerate processes and purpose\
+\'a0- SQLite ownership\
+\'a0- Java Optimizations Benchmark\
+\'a0- OProfile - to observe performance?\
+\'a0 \'a0 \'a0 \'a0{\field{\*\fldinst{HYPERLINK "http://oprofile.sourceforge.net/news/"}}{\fldrslt \cf2 \ul \ulc2 http://oprofile.sourceforge.net/news/}}\
+\
+TODO\
+\'a0- Better understanding of optimization techniques\
+\'a0 \'a0- Register promotion\
+\'a0 \'a0 \'a0 \'a0- Load/store Elimination\
+\'a0 \'a0 \'a0 \'a0- Redundant Null Check Elimination\
+\'a0 \'a0 \'a0 \'a0- Heuristic Scheduling?\
+\'a0 \'a0 \'a0 \'a0- Simple Loop Detection\
+\'a0 \'a0 \'a0 \'a0- Invariant Code Motion\
+\'a0 \'a0 \'a0 \'a0- Induction Variable Optimization\
+\
+Defintion of a Basic Block - {\field{\*\fldinst{HYPERLINK "http://en.wikipedia.org/wiki/Basic_block"}}{\fldrslt \cf2 \ul \ulc2 http://en.wikipedia.org/wiki/Basic_block}}\
+(As expected bounded by branch points)\
+The code in a basic block has one entry point, meaning no code within\
+it is the destination of a jump instruction\
+anywhere in the program, and it has one exit point, meaning only the\
+last instruction can cause the program to begin\
+executing code in a different basic block. Under these circumstances,\
+whenever the first instruction in a basic block\
+is executed, the rest of the instructions are necessarily executed\
+exactly once, in order.[2]\
+\
+Basic Blocks (and JIT) in Java\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://www.google.com/url?sa=t&source=web&cd=2&ved=0CB8QFjAB&url=http%3A%2F%2Fciteseerx.ist.psu.edu%2Fviewdoc%2Fdownload%3Fdoi%3D10.1.1.153.5188%26rep%3Drep1%26type%3Dpdf&rct=j&q=java%20exceptions%20%22basic%20blocks%22&ei=1eQATpufIsXL0QGS5KXRDg&usg=AFQjCNHTJKQUXpRfJgEdizld7fdFghNdnQ"}}{\fldrslt \cf2 \ul \ulc2 http://www.google.com/url?sa=t&source=web&cd=2&ved=0CB8QFjAB&url=http%3A%2F%2Fciteseerx.ist.psu.edu%2Fviewdoc%2Fdownload%3Fdoi%3D10.1.1.153.5188%26rep%3Drep1%26type%3Dpdf&rct=j&q=java%20exceptions%20%22basic%20blocks%22&ei=1eQATpufIsXL0QGS5KXRDg&usg=AFQjCNHTJKQUXpRfJgEdizld7fdFghNdnQ}}\
+\
+Definition of Basic Blocks in Emma\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://emma.sourceforge.net/faq.html#faq-N100F5"}}{\fldrslt \cf2 \ul \ulc2 http://emma.sourceforge.net/faq.html#faq-N100F5}}\
+\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://imsciences.edu.pk/serg/wp-content/uploads/2009/07/Analysis-of-Dalvik-VM.pdf"}}{\fldrslt \cf2 \ul \ulc2 http://imsciences.edu.pk/serg/wp-content/uploads/2009/07/Analysis-of-Dalvik-VM.pdf}}\
+Analysis of the Dalvik VM and Class Library\
+\'a0 \'a0 \'a0 \'a02.3 - Good numbers on relative size of register - dispatches vs. byte\
+count - relative speed\
+\'a0 \'a0 \'a0 \'a04.3 - Good details on the optimization process - particularly point 9\
+\
+Dalvik JIT\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://android-developers.blogspot.com/2010/05/dalvik-jit.html"}}{\fldrslt \cf2 \ul \ulc2 http://android-developers.blogspot.com/2010/05/dalvik-jit.html}}\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://www.youtube.com/watch?v=Ls0tM-c4Vfo"}}{\fldrslt \cf2 \ul \ulc2 http://www.youtube.com/watch?v=Ls0tM-c4Vfo}} - Google IO 2010 Presentation\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://www.android-app-developer.co.uk/android-app-development-docs/android-jit-compiler-androids-dalvik-vm.pdf"}}{\fldrslt \cf2 \ul \ulc2 http://www.android-app-developer.co.uk/android-app-development-docs/android-jit-compiler-androids-dalvik-vm.pdf}}\
+- Above Slides\
+\'a0 \'a0 \'a0 \'a0- Interpreter 2x similar\
+\'a0 \'a0 \'a0 \'a0- 1/3 spent in interpreter\
+\'a0 \'a0 \'a0 \'a0- May do method JIT in future (when charging)\
+\'a0 \'a0 \'a0 \'a0- Decent information on relative performance of interpreter and JIT\
+JIT More Detail\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://embenux.blogspot.com/2011/03/dalvik-jit-triggering-condition-by-bill.html"}}{\fldrslt \cf2 \ul \ulc2 http://embenux.blogspot.com/2011/03/dalvik-jit-triggering-condition-by-bill.html}}\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://embenux.blogspot.com/2011/03/dalvik-jit-trace-jit-by-ben-cheng.html"}}{\fldrslt \cf2 \ul \ulc2 http://embenux.blogspot.com/2011/03/dalvik-jit-trace-jit-by-ben-cheng.html}}\
+\'a0 \'a0 \'a0 \'a0- Nice tid-bit on why tracing is preferable\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "https://groups.google.com/forum/?pli=1#!activity/android-platform/AlgR6m1akykJ/android-platform/Mx1fVjb19TI/upubjbkyK2YJ"}}{\fldrslt \cf2 \ul \ulc2 https://groups.google.com/forum/?pli=1#!activity/android-platform/AlgR6m1akykJ/android-platform/Mx1fVjb19TI/upubjbkyK2YJ}}\
+\'a0 \'a0 \'a0 \'a0- JIT is trace based\
+\'a0 \'a0 \'a0 \'a0- Requires no persistent storage\
+Find reference for 200% - 500% performance gain\
+\
+Honeycomb details\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://www.anandtech.com/Show/Index/4189?cPage=3&all=False&sort=0&page=2&slug=google-android-30-honeycomb-preview"}}{\fldrslt \cf2 \ul \ulc2 http://www.anandtech.com/Show/Index/4189?cPage=3&all=False&sort=0&page=2&slug=google-android-30-honeycomb-preview}}\
+Android 3 (Honeycomb) is multi-core aware - including concurrent GC\
+\
+DexOpt and the installation process\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://www.netmite.com/android/mydroid/dalvik/docs/dexopt.html"}}{\fldrslt \cf2 \ul \ulc2 http://www.netmite.com/android/mydroid/dalvik/docs/dexopt.html}}\
+\
+Froyo + G1 = Epic Fail!\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://shponglespore.livejournal.com/61401.html"}}{\fldrslt \cf2 \ul \ulc2 http://shponglespore.livejournal.com/61401.html}}\
+\
+Zygote Start-up\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://elinux.org/Android_Zygote_Startup"}}{\fldrslt \cf2 \ul \ulc2 http://elinux.org/Android_Zygote_Startup}}\
+\
+Dalvik GC Source\
+\pard\pardeftab720\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://android.git.kernel.org/?p=platform/dalvik.git;a=blob_plain;f=vm/alloc/MarkSweep.c"}}{\fldrslt \cf2 \ul \ulc2 http://android.git.kernel.org/?p=platform/dalvik.git;a=blob_plain;f=vm/alloc/MarkSweep.c}}\
+}

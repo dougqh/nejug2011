@@ -1,0 +1,188 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 Dalvik VM Internals\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+{\field{\*\fldinst{HYPERLINK "http://www.youtube.com/watch?v=ptjedOZEXPM"}}{\fldrslt \cf0 http://www.youtube.com/watch?v=ptjedOZEXPM}}\
+\
+Design to run on\'85\
+- low power CPU\
+- with relatively little RAM\
+- on an OS without swap space\
+Roughly equivalent to a desktop of the late 90s with slightly more OS\
+- with low power\
+\
+Memory Constraints\
+- low memory by desktop standards - 64MB of memory\
+- 40MB after start-up\
+- 20MB left for applications\
+- 10MB ate for system library\
+! No Swap Space !\
+\
+Application Security\
+- requires modern process separation\
+\
+Dex File Anatomy\
+- header\
+- string_ids\
+- type_ids\
+- porto_ids\
+- field_ids\
+- method_ids\
+- class_defs\
+- data\
+\
+Contains so-so JAR file to DEX file diagram(s)\
+\
+JAR is 50% the size of the uncompressed CLASS files\
+DEX uncompressed is about the same size as compressed JAR (actually a little smaller)\
+\
+Memory backed by a file can easily be reestablished by the OS on demand\
+	- clean memory\
+Shared memory is also better because the cost amortized across multiple processes\
+\
+Avoid private - dirty memory\
+\
+As clean memory, DEX files get mapped into memory\
+	- common DEX files can be shared clean memory\
+	- application-specific DEX files are private clean memory\
+Objects, etc. are private dirty memory\
+Shared dirty memory - comes about through Zygote\
+\
+Zygote loads classes that are used across many applications\
+	Sits on socket waiting to start applications\
+	Does UNIX fork on receiving a request\
+	Child becomes the application\
+Child ends up sharing the classes with Zygote\
+\
+GC and Sharing Interaction\
+	- Embedded mark bits\
+	- Separated mark  bits - parallel mark bits\
+\
+Pros and Cons to keeping mark bits with the objects\
+	With the object..\
+	When you are collecting, the object will be hot in the cache \
+	from the previous checking of the bits.\
+\
+	Separate\'85\
+	The mark bits will be in the cache together which is better \
+	when you don't collect.\
+\
+In Android, things are more complicated because processes are sharing\
+memory.  Each process is GC-ed separately, so the mark bits have to \
+be separately.\
+\
+Keeping mark bits externally allows them to have shared dirty memory rather\
+than private dirty memory.  Mark array is only allocated during the mark phase, so it reduces memory pressure, too.\
+\
+CPU - 250-500 Mhz\
+Bus Speed: 100 Mhz\
+Data Cache: 16-32K\
+Available RAM for Apps: 20 MB\
+\
+No JIT in original release\
+Usually doesn't matter\
+  Increases memory pressure because machine is bigger than byte code\
+  JIT cache is tricky to share\
+Much of the libraries are already in native code\
+Hardware support is the norm for processor intensive applications\
+\
+Install-Time Work\
+Verification\
+- Verification is done as install time\
+- DEX aren't "lying"\
+  - Valid Indices\
+  - Valid Offsets\
+- Platform security is done via process boundaries rather by the VM\
+Optimization\
+ - Byte-swapping and padding (unnecessary on ARM)\
+ - Static Linking\
+ - "Inlining" special native methods\
+ - Pruning empty methods\
+  - for example java.lang.Object constructor is empty\
+ - Adding auxiliary data\
+\
+Register Machine\
+ - infinite registers within a method\
+ - provides more semantically dense instructions\
+ - 30% fewer instructions\
+ - 35% fewer code units (2 bytes in DEX - rather than 1 byte in DEX)\
+  - short code\
+ - 35% more bytes in the instruction stream\
+\
+Uses a byte[] for bytecode comparison\
+  - 25 bytes\
+  - 14 dispatches\
+  - 45 reads - break down by stack, local, etc.\
+  - 16 writes\
+  Smart interpreter can save\'85\
+  - 6 reads (at least)\
+  - 6 writes (at least)\
+\
+As DEX\'85\
+  - 18 bytes\
+  - 6 dispatches\
+  - 19 reads\
+  - 6 writes\
+\
+Dispatches kill interpreter performance, so fewer dispatches is much better (when not using a JIT).\
+\
+Array initializations are particularly ugly in Java byte code.\
+	11 bytes for an element\
+Ugly work arounds exist - using string literals (don't do that - does even more work).\
+\
+Nice example of array efficiency gains\
+  Adds nop to align on int boundary for efficiency - compiler optimization\
+\
+Naive interpreter with for and switch - results in way to many branches\
+  Computed goto solves this problem (GCC extension)\
+  At the end of each op-code call a macro that reads the next op and \
+  then branches straight to the case.  -- Pretty cool\
+\
+Eliminating reads important in the main loop\
+\
+Each op-code ends up aligned on a cache line boundary, so\
+  infrequently uses op-s may not end up in cache\
+\
+Human Interaction Scale\
+  10 - 30 interactions / sec\
+Human Perception Scale\
+  25 - 30 image frames / sec\
+ Continuous audio - synched with 100 ms\
+Computer Scale\
+  As fast as possible\
+\
+Good Applications should\'85\
+ - spend most of its time sleeping\
+ - waiting for user or network input\
+\
+Loop Wisely (by efficiency - most to least \
+  (would be interesting to profile in Calyper)\
+  First 3 roughly equal\
+  1 - for ( int i = initializer; i >= 0; i-- )\
+  2 - int limit = calculate limit;  for ( int i = 0; i < limit; i++ )\
+  3 - for ( Type obj : array )\
+  4 - for ( int i = 0; i < array.length; i++ )\
+  5 - for ( int i = 0; i < this.var; i++ )\
+  6 - for ( int i = 0; i < obj.size(); i++ )\
+  Lastly very slow - relatively speaking\
+  7 - for ( Type obj : list )\
+\
+Avoid Allocation\
+ - Short-lived objects need to be GC-ed\
+ - Long-lived objects are private dirty memory (and memory is precious)\
+\
+Low Memory Killer in the Kernel\
+  - Operates at a process level (as expected)\
+  - Kill least recently used application\
+\
+All allocations are on heap (in 1.0 at least)\
+\
+Class File translator is preferable because anything that compiles to .class files can be translated - not just Java\
+\
+A couple of tweaks to JNI to make it more efficient\
+  For applications, JNI is JNI\
+  At platform level, there is a way to bypass some of the JNI overhead}

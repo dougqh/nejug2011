@@ -1,0 +1,375 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 Slides for HotSpot vs Dalvik\
+\
+dalvikvm/Main.c - main\
+  JavaVM vm\
+  JNIEnv env\
+  JavaVMOption options\
+\
+Compiler.h\
+\
+Appears to be used in translation of byte code to machine code\
+struct JitTranslationInfo \{\
+	void *codeAddress\
+	JitInstructionSetType instructionSet <-- not a pointer???\
+	bool discardResult\
+	bool methodCompilationAborted\
+	Thread *requestingThread\
+\}\
+\
+struct CompilerWorkOrder \{\
+	const u2* pc\
+	WorkOrderKind kind - \{ invalid, method, trace, trace & debug \}\
+	void *info\
+	JitTranslationInfo result <-- not a pointer ???\
+	jmp_buf *bailPtr\
+\}\
+\
+Don't really understand\
+struct PredictedChainingCell \{\
+	u4 branch\
+	const ClassObject *clazz\
+	const Method *method\
+	const ClassObject *stagedClazz\
+\}\
+\
+enum JitState \{\
+	kJitNot - not,\
+	kJitTSelectRequest - request a trace (may be filtered)\
+	kJitTSelectRequestHot - request a hot trace (bypass filter - unlike above)\
+	kitJitTSelect - actively selecting a trace\
+	kJitTSelectEnd - Done with trace\
+	kJitSingleStep - single step interpretation (presumably for debug)\
+	kJitSingleStepEnd - done with step - return mterp (normal mode)\
+	kJitDone - ready to leave the debug interpreter\
+\}\
+\
+enum JitHint \{\
+	kJitHitNone\
+	kJitHitTaken - took a branch - ??? took bias ???\
+	kJitHitNotTaken - not taken branch - ??? did not take bias ???\
+	kJitHintNoBias - unbiased branch - ??? not yet biased ???\
+\}\
+\
+struct JitCodeDesc \{\
+	unsigned isCode:1 - boolean - denoting code fragments\
+	unsigned numInsts:8 - number byte codes in run\
+	unsigned runEnd:1 - ??boolean - run ends with last byte\
+	jitHint hint - (see above) - "applies to final code of run"\
+	us startOffset\
+\} \
+\
+From the comment, seems like depending on the pass the contents of \
+the JitTraceRun vary.\
+Comment seems to imply an order of\'85\
+frag1\
+frag2\
+frag3\
+meta1\
+meta2\
+frag4\
+union JitTraceRun \{\
+	JitodeDesc frag;\
+	void* meta;\
+\}\
+\
+struct JitTraceDescription \{\
+	const Method* method\
+	JitTraceRun trace[0] - "variable-length trace descriptors" - ???\
+\}\
+\
+enum JitMethodAttributes \{\
+	kIsCallee - callee is part of the trace, too ???only in hot trace???\
+	kIsHot - is hot\
+	kIsLeaf - is leaf - ???presumably, last in call chain???\
+	kIsEmpty - is empty\
+	kIsThrowFree - throw free - ???no throws in method???\
+	kIsGetter - matches getter pattern\
+	kIsSetter - matches setter pattern\
+\}\
+\
+??? Presumably, these are bit field constants for JIT ???\
+METHOD_IS_CALLEE		1 << kIsCallee\
+METHOD_IS_HOT 			1 << kIsHot\
+METHOD_IS_LEAF			1 << kIsLeaf\
+METHOD_IS_EMPTY		1 << kIsEmpty\
+METHOD_IS_THROW_FREE	1 << kIsThrowFree\
+METHOD_IS_GETTER		1 << kIsGetter\
+METHOD_IS_SETTER		1 << kIsSetter\
+\
+struct CompilerMethodStats \{\
+	const Method* method	- ??? "Used as hash entry signature" ???\
+	int dalvikSize		- number of dalvik byte codes\
+	int compiledDalvikSize	- number of compile dalvik bytecodes\
+	int nativeSize		- number of native bytes produced\
+	attributes			- ??? attributes vector ???\
+\}\
+\
+bool dvmCompileSetupCodeCache( void ) (in Compiler.c)\
+	Creates a Android shared memory region using ashmem API\
+	mmap cache into gDvmJit.codeCache\
+	Copies template code to beginning of cache\
+	Protects the code cache\
+\
+bool dvmCompilerArchInit( void )\
+\
+void dvmCompilerArchDump( void )\
+\
+void dvmCompilerStartup( void ) (in Compiler.c)\
+	Inits the different compiler locks\
+		- compilerLock\
+		- compilerICPatchLock\
+		- codeCacheProtectionLock\
+		- compilerLock\
+\
+	Acquires the compilerLock\
+\
+	Inits the compiler conditions\
+		- compilerQueueActitivity - non-empty condition\
+		- compilerQueueEmpty - queue empty condition\
+\
+	Sets various index and length vars to 0\
+\
+	Releases the compilerLock\
+\
+	Invokes dvmCreateInternalThread - passing the compilerHandle	\
+\
+void dvmCompilerShutdown( void ) (in Compiler.c)\
+	Sets the pProfTable and pProfTableCopy to NULL\
+	\
+	if ( exists compilerHandle ) \{\
+		set halt to true\
+\
+		acquires compilerLock\
+		signals queue activity - \
+			probably to unblock the compiler thread if it is \
+			waiting on activity\
+			That thread will then wake up and realize that\
+			there is no work and it is halting\
+		releases compilerLock\
+	\}\
+\
+	Invokes dvmJitUnchainAll\
+\
+	Comment - explains that the JitTable or ProfTable are not being\
+	freed because other threads may still be using them.  As a consequence,\
+	the compiler thread cannot be restarted.\
+\
+void dvmCompilerWorkEnqueue( -- (in Compiler.c)\
+	const u2* pc,\
+	WorkOrderKind kind,\
+	void* info );\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 Tries to enqueue a work order - return true on success\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 void *dvmCheckCodeCache( void *method )\
+\
+CompilerMethodStats *dvmCompilerAnalyzeMethodBody(\
+	const Method *method,\
+	JitTranslationInfo *info );\
+\
+bool dvmCompilerCanIncludeThisInstruction(\
+	const Method *method,\
+	const DecodedInstruction *insn );\
+\
+bool dvmCompileMethod(\
+	struct CompilationUnit *cUnit,\
+	const Method *method,\
+	JitTranslationInfo *info );\
+\
+bool dvmCompileTrace(\
+	JitTraceDescription *trace,\
+	int numMaxInsts,\
+	JitTranslationInfo *info,\
+	jmp_buf *baitPtr,\
+	int optHints );\
+\
+void dvmCompilerDumpStats( void );\
+\
+void dvmCompilerDrainQueue( void ); (in Compiler.c)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 Block until the queue is empty, or there is a pending suspend request\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+void dvmJitUnchainAll( void );\
+\
+void dvmCompilerSortAndPrintTraceProfiles( void );\
+\
+void dvmCompilerPerformSafePointChecks( void ) (in Compiler.c ?)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 "Performs action that are only safe when all threads are suspended\'85\
+	1 - check if code cache is full.  If so reset and restart populating\
+	2 - Patch predicted chaining cells by consuming recorded workers.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+void dvmCompilerInlineMIR( void ); - ??? What's a MIR?\
+\
+??? SSA - Seamless and Secure Access ???\
+void dvmInitializeSSAConversion(\
+	CompilationUnit *cUnit );\
+\
+int dvmInitializeSSARegToDalvik(\
+	CompilationUnit * cUnit,\
+	int ssaReg );\
+\
+void dvmCompilerLoopOpt(\
+	CompilationUnit *cUnit );\
+\
+void dvmCompilerNonLoopAnalysis(\
+	CompilationUnit *cUnit );\
+\
+void dvmCmpilerFindLiveIn(\
+	CompilationUnit *cUnit,\
+	BasicBlock *bb );\
+\
+void dvmCompilerDoSSAConversion(\
+	CompilationUnit *cUnit,\
+	BasicBlock *bb );\
+\
+void dvmCompilerDoConstantPropagation(\
+	CompilationUnit *cUnit,\
+	BasicBlock *bb );\
+\
+void dvmCompilerFindInductionVariables(\
+	CompilationUnit *cUnit,\
+	BasicBlock *bb );\
+\
+char *dvmCompilerGetDalvikAssembly(\
+	DecodedInstruction *insn,\
+	char *note );\
+\
+char *dvmCompilerGetSSAString(\
+	CompilationUnit *cUnit,\
+	SSARepresentation *ssaRep );\
+\
+void dvmCompilerDataFlowAnalysisDispatcher(\
+	CompilationUnit *cUnit,\
+	void (*func)( CompilationUnit *, BasicBlock *) );\
+\
+void dvmCompilerStateRefresh( void );\
+	acquires the tableLock\
+	Active if JIT if pProfTable is not NULL\
+	Activate if gDvm.debuggerActive and there is at least one activeProfiler\
+\
+	if ( active ) \{\
+		gDvmJit.pProfTable = gDvmJit.pProfTableCopy\
+	\} else \{\
+		gDvmJit.pProfTable = NULL\
+		make unchain TRUE\
+	\}\
+	release the tableLock\
+	if  ( unchain ) \{\
+		dvmJitUnchainAll();\
+	\}\
+\
+JitTraceDescription *dvmCopyTraceDescriptor(\
+	const u2 *pc,\
+	const JitEntry *desc );\
+\
+void *dvmCompilerGetInterpretTemplate();\
+\
+-------------------------------------------------------------------------------------\
+Private methods of Compiler.c\
+\
+gDvm - ? Global Dalivk VM ?\
+gDvmJit - ? Global Dalvik VM JIT ?\
+ - compiler lock\
+ - contains queue\
+\
+bool workQueueLength(void) - ??? returns boolean ???\
+\
+CompilerWorkOrder workDeque( void ) - deques next work order\
+\
+void crawlDalvikStack( Thread *thread, bool print )\
+	??? "Crawl the Dalvik stack frames to clear the returnAddr field" ???\
+\
+void resetCodeCache( void )\
+	Done without a lock?\
+		Doesn't reset if any Threads are "stuck" in the JIT state\
+		Calls crawlDalvikStack\
+	\
+	Takes the compilerLock\
+	\
+	Reads from the work queue - and frees the work.info memory\
+	\
+	Unprotects the code cache\
+	Resets to zero - "to cause stale JIT to immediately crash"\
+	Re-protects the code cache\
+\
+	Takes gDvmJit.compilerICPatchLock\
+	Sets gDvmJit.compilerICPatchIndex = 0\
+	Releases compilerICPatchLock\
+\
+	Set cache full to false\
+\
+	Release compilerLock\
+\
+bool compilerThreadStartup( void ) -- ??? not static ???\
+	Setups the code cache if not inherited from zygote\
+		- TODO: Research further\
+	Allocates the initial area block by calling dvmCompilerHeapInit\
+	\
+	Takes the compilerLock\
+	Sets gDvmJit.methodStatsTable using dvmHashTableCreate\
+	\
+	#if WITH_JIT_TUNING -> gDvm.verboseShutdown = true\
+\
+	Initializes the gDvmJit.tableLock and acquires it\
+	calloc-s a "pJitTable" filled with JitEntry *\
+\
+	Profiling is turned on and off based on whether gDvm.pJitProfTable is null.\
+\
+void compilerThreadStart( void *arg )\
+	Uses dvmChangeStatus to set THREAD_VMWAIT\
+	\
+	Lengthy comment about not starting the compiler thread right away\
+	because the initial launch of the application is probably not worth\
+	optimizing\
+\
+	Another comment about detecting system server vs normal process\
+	Is server when gDvm.systemServerPid is 0\
+	Does an indefinite wait when it is the server, the server then waits \
+	until the whole system is booted\
+	In safe mode, the signal will never come and the DVM will remain\
+	in interpreted mode.  (That is the compiler thread will never start.)\
+\
+	Calls compilerThreadStartup\
+\
+	Takes the compilerLock\
+	while ( ! dvmJit.haltCompilerThread ) \{\
+		if ( the work queue is empty ) \{\
+			signal that the queue is empty\
+			wait for the queue to not be empty\
+		\} else \{\
+			do \{\
+				take a work order\
+				acquire the compiler lock\
+\
+				if ( jit blocking ) \{\
+					suspend\
+				\}\
+				if ( jit table is getting too full ) \{\
+					try to resize\
+				\}\
+				if  ( halted ) \{\
+					log and ??? bypass compilation ???\
+				\} else if ( gDvmJit.codeCacheFull ) \{\
+					Store some jump info???\
+					Call dvmCompileDoWork( &work )\
+					Call dvmJitSetCodeAddr passing bits from the work result\
+				\}\
+\
+				free work.info\
+				record the jitTime\
+				free compilerLock\
+			\} while ( ! work queue is empty )\
+		\}\
+	\}\
+	Signal that the queue is empty (probably as part of shutdown process)\
+}

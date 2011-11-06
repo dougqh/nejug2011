@@ -1,0 +1,173 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww11920\viewh8660\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 Davlik dex-opt path\
+\
+dexopt/OptMain.c - main\
+	set_process_name( "dexopt" )\
+	Depending on flag, invokes one of\'85\
+		- fromZip\
+		- fromDex\
+		- preopt\
+	(for now focusing on fromDex path, other 2 paths are basically the same)\
+\
+dexopt/OptMain.c - fromDex\
+	Based on flags\'85\
+		verifyMode in VERIFY_MODE_\{ NONE, REMOTE, ALL \}\
+		dexOptMode in OPTIMIZE_MODE_\{NONE, VERIFIED, ALL \}\
+\
+	dvmPrepForDexOpt\
+\
+	dvmContinueOptimization\
+\
+Init.c - dvmPrepForDexOpt\
+	blockSignals\
+	?Does something to the generation of register maps?\
+\
+	Some of the same startup as normal\'85\
+	- dvmGcStartup\
+	- dvmThreadStartup\
+	- dvmInlineNativeStartup\
+	- dvmVerificationStartup\
+	- dvmRegisterMapStartup\
+	- dvmInstanceofStartup\
+	- dvmClassStartup\
+\
+	Does NOT set gDvm.initializing = true to avoid a "death-spin"\
+\
+DexPrepare.c - dvmContinueOptimization\
+	Based on flag passed in (presumably from command line), may optimize bootstrap class\
+	mmap the whole DEX\
+	rewriteDex\
+	dvmDexFileOpenPartial\
+	if ( gDvm.generateRegisterMaps ) dvmGenerateRegisterMaps\
+	updateChecksum\
+	dvmDexFileFree\
+	msync - sync the file back to disk\
+	munmap - unman the memory\
+	writeDependencies - adds a dependency list to the FD\
+	writeOptData - optimized pre-computed data structures\
+	computeFileChecksum - AGAIN?\
+	\
+DexPrepare.c - rewriteDex\
+	dexSwapAndVerify - swap to machine byte-order\
+	set doVerify, doOpt based on mode settings\
+	Constructs a class look-up table - "eventually appended to the end of ODEX"\
+	loadAllClasses\
+	verifyAndOptimizeClasses\
+\
+? - dvmDexFileOpenPartial\
+\
+? - writeDependencies\
+\
+? - writeOptData\
+\
+? - dexSwapAndVerify\
+\
+DexPrepare.c - loadAllClasses\
+	Add the DEX being optimized --to--> dvmSetBootPathExtraDex\
+	dvmFindSystemClass( "Ljava/lang/Class" ) - \
+		according to the comments, done to avoid a circular load problem\
+	foreach ( classDef in thisDex ) \{\
+		theClass = dvmFindSystemClassNotInit( classDef )\
+		if ( theClass in thisDex ) \{\
+			inc loadedCount\
+		\}\
+	\}\
+\
+DexPrepare.c - verifyAndOptimizeClasses\
+	dvmCreateInlineSubsTable (if doOpt)\
+	foreach ( classDef in thisDex ) \{\
+		theClass = dvmLookupClass( classDef )\
+		verifyAndOptimizeClass( theClass )\
+	\}\
+\
+DexPrepare.c - verifyAndOptimizeClass\
+	dvmVerifyClass\
+	dvmOptimizeClass\
+\
+DexVerify.c- dvmVerifyClass\
+	if ( already verified ) return\
+	foreach ( directMethod in theClass ) \{\
+		verifyMethod( directMethod )\
+	\}\
+	foreach ( virtualMethod in theClass ) \{\
+		verifyMethod( virtualMethod )\
+	\}\
+\
+Optimize.c - dvmOptimizeClass\
+	foreach ( directMethod in theClass ) \{\
+		optimizeMethod( directMethod )\
+	\}\
+	foreach ( vritualMethod in theClass ) \{\
+		optimizeMethod( directMethod )\
+	\}\
+\
+Optimize.c - optimizeMethod\
+	if ( is native || is abstract ) skip\
+\
+	Starts with "essential 'substitutions'"...\
+		Tracks field GETs & PUTs\
+			(Generally) if SMP:\
+				replace with VOLATILE OP\
+			else:\
+				replace with QUICK_OP\
+			Only, the volatile op bit applies to static fields\
+\
+		For instance fields, rewriteInstField( method, insns, quickOpc, volatileOpc )\
+		For static fields, rewriteStaticField( method, insns, volatileOpc )\
+\
+		For invocations\'85\
+		if ( invocation is virtual ) \{\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 			//try rewrite inline - otherwise, rewrite quick\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 			rewriteExecuteInline; otherwise, rewriteVirtualInvoke( OP_INVOKE_VIRTUAL_QUICK )\
+		\}\
+		if ( invocation is super ) \{\
+			rewriteVirtualInvoke( OP_INVOKE_SUPER_QUICK )\
+		\}\
+		if ( invocation is direct ) \{\
+			//try rewrite inline - otherwise, rewrite empty invocation\
+			rewriteExecuteInline; otherwise, rewriteEmptyDirectInvoke\
+		\}\
+		if ( invocation is static ) \{\
+			rewriteExecuteInline\
+		\}\
+		\
+\
+	Additional "essential 'substitutions'" for SMP devices\'85\
+		Does additional rewrites for Cat1 fields - (which are not done above)\
+\
+\
+\
+DexVerify.c - verifyMethod\
+	if ( is native || is abstract ) skip\
+\
+	sanity check register counts - ins + locals == registers, so ins < registers\
+	\
+	dvmComputeCodeWidths\
+		compute width of each instruction?\
+		count new-instance instructions\
+\
+	dvmCreateUninitInstanceMap - map of uninitialized instances\
+		probably, done to verify that all initialized objects - get initialized\
+\
+	dvmSetTryFlags - sets a flag on all instructions which are guarded by a try block\
+\
+	verifyInstructions\
+\
+	dvmVerifyCodeFlow\
+\
+dvmOptResolveClass\
+	Interesting used as an alternative class resolver, that does not resolve classes \
+	from other DEX-es.\
+	I believe this effectively prevents Dalvik from trying to optimize stuff from classes\
+	that are not in the application DEX.  This is probably useful to prevent re-optimizing\
+	all DEX-es when a new Android image is released.\
+\
+dvmOptInstField and dvmOptResolveStaticField\
+	Probably similar to the above}

@@ -1,0 +1,72 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 A JIT Compiler for Android's Dalvik VM\
+\
+Check out "Virtual Machine for Android Apps"\
+http://www.youtube.com/watch?v=ptjedOZEXPM\
+\
+4:00 - Current interpreter\
+Highly tuned interpreter\
+  - decode phase\
+  - exuection phase\
+\
+Not so bad on Dalvik\
+  - because heavy lifting is in native\
+\
+Dalvik interpreter twice as fast as Java interpreter - only 1/3 interpreted for most apps\
+\
+ARM machine code expands significantly over byte code\
+\
+8:30 - JIT breakdown\
+When to compile\
+ - install time\
+ - launch time\
+ - method invoke time\
+ - instruction fetch time\
+\
+What to compile\
+ - whole program\
+ - share11d library\
+ - page\
+ - method\
+ - trace\
+ - single instruction\
+\
+\
+9:00 - JIT requirements\
+ - small amount of memory\
+ - coexist with process security model - no bleeding of info between processes\
+ - minimal warm-up\
+ - smooth transition between interpretation and compiled code\
+\
+11:00 - Method JIT\
+Interpret until we hit a call count - 1000 for client / 10000 for server\
+Strength\
+ - large optimization window\
+ - sync state with interpreter at method boundaries\
+Weaknesses\
+ - cold code within hot methods get compiled - time and space wasted\
+ - more memory to compile\
+ - longer before benefit kicks in\
+\
+13:00 - Trace JIT\
+- place translated code in a translation cache (can span method calls)\
+Strengths\
+ - only hottest of hot code is compiled - minimized memory use\
+ - tight integration with interpreter\
+ - very rapid return on perf boost\
+Weaknesses\
+ - smaller window of optimization\
+ - more frequent sync with interpreter\
+ - hard to share translation across processes\
+\
+17:00 - Full Program\
+4.5 MB - 8% : 390K were hot methods -> only 2% of the code in those were hot\
+\
+Method JIT still possible in the future - GoogleTV?\
+\
+19:45 - Flow chart of JIT}

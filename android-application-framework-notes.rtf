@@ -1,0 +1,207 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 Inside the Android Application Framework\
+{\field{\*\fldinst{HYPERLINK "http://www.youtube.com/watch?v=TkPiXRNee7A"}}{\fldrslt http://www.youtube.com/watch?v=TkPiXRNee7A}}\
+\
+APK is Android Package - what does it stand for?\
+	- APK is component\
+	- Not necessarily an application\
+\
+	- Each component is an island unto itself - cannot cross-over - \
+	   but communication bridges are seamless created for them \
+	  (presumably by Binder)\
+\
+	- Each component is a managed application\
+\
+Activity is a molecule - discrete chunk of functionality\
+\
+APK Package is associated with a process\
+Multiple Activities may run in same process\
+May also contain a ContentProvider and Services\
+\
+Task is a collection of multiple Activities\
+\
+Activity is an encapsulation of an operation\
+	They are an execution context - placed on Activity Manager (stack)\
+\
+Task is notional, not an API - runtime record of a sequence activities (the activity stack)\
+UI history stack\
+\
+\
+Process Basics\
+	Notion of application can span multiple APKs\
+	(if you incorporate a separate component)\
+\
+	Android processes are Linux processes\
+\
+	By default, 1 process per APK -- by default, 1 thread per process\
+\
+	(Almost) All components interleave events into a single main thread\
+\
+Activity Lifecycle\
+	Activities have several states\
+\
+	3 General Phases - start up, normal execution, shut down\
+	\
+	Start up\
+		- onCreate - first method during lifetime with prior state\
+		- onStart / onRestart - signal that execution is starting\
+		- onResume - signals that prior pause is being undone\
+\
+	Normal execution\
+		- onFreeze - save UI state (not persistence - which is onPause)\
+		- onPause - signals loss of focus and possible impending shutdown\
+\
+	Shut down\
+		- onStop / onDestory - final shutdown and process termination\
+			(not guaranteed to be called)\
+\
+Activity Lifecycle Examples\
+	- Starting a Child Activity\
+	- Child Activity + Process Shutdown\
+	- Returning to the Home Screen\
+	- Calling finish() explicitly\
+	\'85\
+\
+Child Activity Launched\
+	- onCreate\
+	- onStart\
+	- onResume\
+		--- app is running here ---\
+	- onFreeze (sort of onBlur - indicates lack of UI focus)\
+	- onPause\
+	- onStop -- not guaranteed to be called\
+	- onRestart\
+	- onStart / onResume\
+\
+Child Activity + Process Death\
+	- onCreate (first time - empty state)\
+	- onStart\
+	- onResume\
+	- onFreeze\
+	- onPause\
+	- onStop (maybe)\
+	- onDestroy (maybe)\
+	- onCreate (with previous state)\
+\
+User Hits "Home" - home is no different from any other activity\
+	- onCreate\
+	- onStart\
+	- onResume\
+	- onFreeze\
+	- onPause\
+	- onStop (maybe)\
+	- onDestroy (maybe)\
+\
+finish() called\
+	- onCreate\
+	- onStart\
+	- onResume\
+	NO CALL to onFreeze - so NO UI state to save\
+	- onPause - still called to save app state\
+	- onStop - probably is called in this case\
+	- onDestroy - probably is called in this case\
+\
+Dialog Box - not an activity - so no lifecycle methods invoked\
+\
+Transparent non-fullscreen child\
+	- onCreate\
+	- onStart\
+	- onResume\
+	- onFreeze\
+	- onPause\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 	??? - no onStop because the other application is still visible below???	\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 	- onResume\
+\
+Device Goes to Sleep - same as another activity obscuring -\
+onFreeze and onPause\
+	- onCreate\
+	- onStart\
+	- onResume\
+	- onFreeze\
+	- onPause\
+	- onResume\
+\
+Threads and Loopers\
+	Each thread a Looper to handle a message queue\
+\
+	Events from components are interleaved into Looper\
+		- Loopers are associated with a single process AND\
+		  are NOT thread safe\
+	Loopers cannot accommodate multi-threaded access\
+\
+	MessageHandlers provide a way to push activity into the Looper\
+\
+APK contains a Process with a single thread\
+	Looper reads from Message Queue\
+	Messages are UI events / system events, etc.\
+	Intents, Activities, etc. are invoked by the Looper\
+\
+Single-threaded in the same way that JavaScript is single-threaded\
+	Same sort of warning, too - triggered by stale event in the looper queue\
+\
+Services in the same process are called locally\
+Other services are invoked via Binder\
+	Binder uses a ThreadPool within your process\
+	Uses the ThreadPool to prevent deadlock\
+	READ MORE ON THIS\
+\
+Views use Looper messages to fire events\
+\
+Service Lifecycle\
+	- Explicit service start - like MP3 in background\
+		- typically must be explicitly stopped\
+	- Implicit services - are reference counted and collected\
+\
+Process Resource Management\
+	- Spawned by the special "Zygote" process\
+		- Process + pre-warmed Dalvik VM == responsiveness\
+	- Process runs under user ID unique to system\
+		- Process + User ID == security\
+\
+APKs are installed under a uniquely generated user ID\
+	- Each APK is sandboxes as its own user\
+	- Without Exception\
+	- Always runs as its own user ID\
+\
+Only 3 processes run as root\
+	- init process\
+	- Zygote - uses chuser\
+	- Main Runtime - Surface Flinger / Audio Flinger, etc.\
+\
+Shared functional and data is done through\'85\
+	Services - for functionality\
+	ContentProviders - for data\
+\
+Why??\
+	- All this process / Activity / task stuff is confusing\'85 why?\
+	- It's all for the noble goal of efficiency\
+	- Serialization is slow; memory transfers are slow\
+		- Memory bandwidth on a phone is 1/10th that of a desktop\
+	- Lifecycle is seamless, but data sometimes isn't\
+	- Specific APIs send data across \'85\
+\
+IPC Overview\
+\
+Binder brings Kernel and Process space\
+	Parcelable is interface is the Binder equivalent of Externalizable\
+	Usually gotten automatically through Bundle\
+\
+Why don't they support Java Serialization?\
+	Java Serialization is designed for streaming\
+	Parcelable is design for block IO transfer\
+\
+Bundles are type-safe containers of primitives\
+	- That is C-like primitives: ints, strings, etc.\
+Simple data-passing APIs use Bundles\
+	- Think of onFreeze as passing data to your future self\
+\
+Background processing is done through a Service\
+\
+There is a start-up Intent - that could be used to start background process at start-up}

@@ -1,0 +1,73 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 HelveticaNeue-Light;\f2\fswiss\fcharset0 ArialMT;
+}
+{\colortbl;\red255\green255\blue255;\red134\green205\blue77;\red33\green102\blue55;\red255\green255\blue255;
+}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 Android Security\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab920\pardirnatural
+
+\f1 \cf0 \expnd0\expndtw0\kerning0
+\ul \ulc2 \shad\shadx71\shady-72\shadr60\shado123 \shadc0 http://developer.android.com/reference/java/lang/SecurityManager.html\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0 \cf0 \kerning1\expnd0\expndtw0 \ulnone \shad0 flatly states that Android's Security Manager does not allow the safe execution of untrusted code\
+\
+Digging deeper into networking\'85\
+SocketImpl - line 58\
+INetworkSystem netImpl = Platform.getNetworkSystem();\
+part of standard Harmony\
+That refers to Harmony's OSNetworkSystem which uses standard C APIs\
+\
+So, the lock down is done a layer lower.  Is that in Bionic?\
+NDK starter - {\field{\*\fldinst{HYPERLINK "http://mobile.tutsplus.com/tutorials/android/ndk-tutorial/"}}{\fldrslt http://mobile.tutsplus.com/tutorials/android/ndk-tutorial/}}\
+\
+Android RPC\
+{\field{\*\fldinst{HYPERLINK "http://developer.android.com/guide/topics/fundamentals.html"}}{\fldrslt http://developer.android.com/guide/topics/fundamentals.html}}\
+\
+service_manager.c sits on top binder.c\
+Establishes hooks to\'85\
+allowed[] = \{\
+#ifdef LVMX\
+    \{ AID_MEDIA, "com.lifevibes.mx.ipc" \},\
+#endif\
+    \{ AID_MEDIA, "media.audio_flinger" \},\
+    \{ AID_MEDIA, "media.player" \},\
+    \{ AID_MEDIA, "media.camera" \},\
+    \{ AID_MEDIA, "media.audio_policy" \},\
+    \{ AID_DRMIO, "drm.drmIOService" \},\
+    \{ AID_DRM,   "drm.drmManager" \},\
+    \{ AID_NFC,   "nfc" \},\
+    \{ AID_RADIO, "radio.phone" \},\
+    \{ AID_RADIO, "radio.sms" \},\
+    \{ AID_RADIO, "radio.phonesubinfo" \},\
+    \{ AID_RADIO, "radio.simphonebook" \},\
+/* TODO: remove after phone services are updated: */\
+    \{ AID_RADIO, "phone" \},\
+    \{ AID_RADIO, "sip" \},\
+    \{ AID_RADIO, "isms" \},\
+    \{ AID_RADIO, "iphonesubinfo" \},\
+    \{ AID_RADIO, "simphonebook" \},\
+\};\
+\
+Calls to networking API still seem to go into the same OS mechanisms\
+\
+{\field{\*\fldinst{HYPERLINK "http://www.uniforum.chi.il.us/slides/IntroToAndroid/UniforumIntroToAndroid.pdf"}}{\fldrslt http://www.uniforum.chi.il.us/slides/IntroToAndroid/UniforumIntroToAndroid.pdf}}\
+Still not any clearer\
+\
+\pard\pardeftab720\sl300
+
+\f2 \cf3 \cb4 stid.googlecode.com/files/Inside_the_
+\b Android
+\b0 _Application_Framework.pdf\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0 \cf0 \cb1 Still does not contain the service diagram I want\
+\
+{\field{\*\fldinst{HYPERLINK "http://www.netmite.com/android/mydroid/development/pdk/docs/telephony.html"}}{\fldrslt http://www.netmite.com/android/mydroid/development/pdk/docs/telephony.html}}\
+Nice diagrams of the telephony call sequence\
+\
+Android's {\field{\*\fldinst{HYPERLINK "http://www.kroah.com/log/linux/android-kernel-problems.html"}}{\fldrslt http://www.kroah.com/log/linux/android-kernel-problems.html}}}

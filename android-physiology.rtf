@@ -1,0 +1,108 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10620\viewh8200\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 Patrick Brady - Android Physiology\
+\
+Linux Kernel - is not Linux\
+No native windowing system\
+No glibc support\
+\
+Based on 2.6.24 originally (not sure now)\
+Patch of Kernel enhancements\
+\
+Kernel Enhancements\
+- Alarm\
+- Ashmem\
+- Binder (based on OpenBinder) - more on OpenBinder: {\field{\*\fldinst{HYPERLINK "http://www.osnews.com/story/13674/"}}{\fldrslt http://www.osnews.com/story/13674/}}\
+- Power Management\
+- Low Memory Killer\
+- Kernel Debugger\
+- Logger\
+\
+5:30 - Binder\
+IPC can introduce a lot overhead - needed something lightweight\
+IPC through shared memory\
+Per-process thread pool handled for you\
+Reference counts used to collect shared data\
+\
+8:30 - Binder Call Flow\
+No overhead for calling service in same process\
+\
+11: 30 - Power Management\
+Built on-top of Linux Power Management\
+More aggressive power management policy\
+Takes an off by default position\
+Apps can use a wake lock to say keep display up or CPU up or both\
+Modem processor still up to receive calls\
+\
+13:30 - Power Management call diagram\
+App A talks to PowerManager which is Java proxy to the PM Driver\
+\
+Largely handled automatically by touch events triggered wake locks automatically\
+\
+17:30 - Runtime Libraries\
+Why Bionic?\
+- Side-step GPL - for Open Handset Alliance Partners\
+- Small\
+- Fast\
+- Small / fast mutexes: 4 bytes instead of 12 bytes\
+- Not fully POSIX compliant - missing C++ exception support\
+- Not compatible with GNU libc (only supports some extensions)\
+\
+23:30 - Media Framework\
+- Based on OpenCORE\
+- can plug-in hardware or software codec support\
+\
+25:30 - Surface Flinger\
+- composites multiple surfaces from different apps into a single frame buffer\
+- handles both 2D and 3D\
+- surface flinger sits on top of Binder IPC\
+\
+27:45 - Audio Flinger\
+- works with existing Linux APIs\
+- routes audio to different output devices - Earpiece, Speaker, Bluetooth\
+\
+29:00 - Hardware Abstraction Library (HAL)\
+- Sit in-between Libraries / Runtime layer and Linux kernel layer\
+- User-space written in C / C++\
+- Not everything has a standard API in today's kernel\
+- Kernel drivers are GPL\
+\
+33:00 - Example of HAL binding\
+\
+Dalvik uses fixed width data structures\
+\
+Activity Manager maintains a back stack\
+\
+43:30 - Android Boot Process\
+init starts\'85\
+- usbd\
+- adbd\
+- debuggerd\
+- rild\
+\
+46:00\
+then\'85\
+zygote\
+runtime -> service manager\
+runtime -send signal-> zygote - zygote then starts 'System Server'\
+'System Server' starts\'85\
+ - Surface Flinger - registers back to 'Service Manager'\
+ - Audio Flinger - registers back to 'Service Manager'\
+ - etc.\
+Other services start too - also register to 'Service Manager'\
+\
+Finally, ActivityManager - sends signal to Zygote - to start 'home' activity\
+\
+Everyone these has a libc\
+3 have Dalviks\
+Thus small footprint is important\
+\
+Binder IPC is entered through Context object\
+\
+50:00 - diagrams of IPC calls from application (use just one)\
+\
+}
