@@ -1,0 +1,21 @@
+The speaker was knowledgeable about the subject?
+Strongly Disagree, Disagree, Somewhat Agree, Agree, Strongly Agree
+
+The content was clearly presented?
+Strongly Disagree -> Strongly Agree
+
+The speaker handled questions effectively?
+Strongly Disagree -> Strongly Agree
+
+The level of the presentation was...
+Too Basic, Just Right, Too Advanced
+
+Overall rating for the presentation
+Terrible, So-So, Okay, Good, Excellent
+
+Things you liked about the presentation...
+____
+
+Things you disliked about the presentation...
+____
+
