@@ -1,0 +1,20 @@
+ 0% Scenario{vm=java, trial=0, benchmark=Backwards, size=1000} 710.54 ns; ?=6.29 ns @ 3 trials
+14% Scenario{vm=java, trial=0, benchmark=NewFor, size=1000} 710.08 ns; ?=6.34 ns @ 4 trials
+29% Scenario{vm=java, trial=0, benchmark=OldFor, size=1000} 709.27 ns; ?=9.01 ns @ 10 trials
+43% Scenario{vm=java, trial=0, benchmark=BoxedNewFor, size=1000} 2558.96 ns; ?=24.93 ns @ 10 trials
+57% Scenario{vm=java, trial=0, benchmark=BoxedOldFor, size=1000} 714.13 ns; ?=2.10 ns @ 3 trials
+71% Scenario{vm=java, trial=0, benchmark=ListThreadUnsafe, size=1000} 2804.46 ns; ?=26.26 ns @ 4 trials
+86% Scenario{vm=java, trial=0, benchmark=ListNewFor, size=1000} 7597.14 ns; ?=74.67 ns @ 3 trials
+
+       benchmark   ns linear runtime
+       Backwards  711 ==
+          NewFor  710 ==
+          OldFor  709 ==
+     BoxedNewFor 2559 ==========
+     BoxedOldFor  714 ==
+ListThreadUnsafe 2804 ===========
+      ListNewFor 7597 ==============================
+
+vm: java
+trial: 0
+size: 1000

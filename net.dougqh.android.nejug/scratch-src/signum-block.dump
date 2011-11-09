@@ -1,0 +1,33 @@
+reading Signum.class...
+method <init> ()V
+block 0000: 0000..0004
+  0000: aload_0 // 00
+  0001: invokespecial method{java.lang.Object.<init>:()V}
+  next 0004
+block 0004: 0004..0005
+  0004: return
+  returns
+
+method signum (I)I
+block 0000: 0000..0004
+  0000: iload_0 // 00
+  0001: ifge 0006
+  next 0004
+  next 0006
+block 0004: 0004..0006
+  0004: iconst_m1 // #-01
+  0005: ireturn
+  returns
+block 0006: 0006..000a
+  0006: iload_0 // 00
+  0007: ifne 000c
+  next 000a
+  next 000c
+block 000a: 000a..000c
+  000a: iconst_0 // #+00
+  000b: ireturn
+  returns
+block 000c: 000c..000e
+  000c: iconst_1 // #+01
+  000d: ireturn
+  returns

@@ -1,0 +1,11 @@
+ 0% Scenario{vm=java, trial=0, benchmark=NullChecking, nullProportion=0.9, size=1000} 1644.86 ns; ?=72.52 ns @ 10 trials
+50% Scenario{vm=java, trial=0, benchmark=CatchNPE, nullProportion=0.9, size=1000} 25934.29 ns; ?=3017.70 ns @ 10 trials
+
+   benchmark    us linear runtime
+NullChecking  1.64 =
+    CatchNPE 25.93 ==============================
+
+vm: java
+trial: 0
+nullProportion: 0.9
+size: 1000

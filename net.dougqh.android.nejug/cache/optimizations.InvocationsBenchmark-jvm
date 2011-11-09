@@ -1,0 +1,13 @@
+ 0% Scenario{vm=java, trial=0, benchmark=Static} 0.50 ns; ?=0.00 ns @ 3 trials
+25% Scenario{vm=java, trial=0, benchmark=Private} 0.54 ns; ?=0.03 ns @ 10 trials
+50% Scenario{vm=java, trial=0, benchmark=Virtual} 0.50 ns; ?=0.01 ns @ 10 trials
+75% Scenario{vm=java, trial=0, benchmark=Interface} 0.52 ns; ?=0.04 ns @ 10 trials
+
+benchmark    ns linear runtime
+   Static 0.496 ===========================
+  Private 0.538 ==============================
+  Virtual 0.503 ============================
+Interface 0.521 =============================
+
+vm: java
+trial: 0

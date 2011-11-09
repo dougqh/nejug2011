@@ -1,0 +1,20 @@
+executing mkdir -p /tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b[0G[KActions: 1
+installing action 0; 0 are runnable[0G[Kbuild optimizations.LoopVariableBenchmark[0G[Kexecuting mkdir -p /tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/userDir/optimizations.LoopVariableBenchmark[0G[Krunning actions in serial[0G[Kexecuting mkdir -p /tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/optimizations.LoopVariableBenchmark/classes[0G[Kexecuting action 0; 0 are ready to run[0G[Kexecuting javac -sourcepath /users/dougqh/Desktop/Development/NejugAndroid/net.dougqh.android.nejug/benchmarks-src:/users/dougqh/Desktop/Development/NejugAndroid/net.dougqh.android.nejug/benchmarks-src -classpath /Users/dougqh/Desktop/Development/NejugAndroid/net.dougqh.android.nejug/benchmarks-lib/vogar.jar -d /tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/optimizations.LoopVariableBenchmark/classes /users/dougqh/Desktop/Development/NejugAndroid/net.dougqh.android.nejug/benchmarks-src/optimizations/LoopVariableBenchmark.java[0G[Kexecuting jar cvfM /tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/optimizations.LoopVariableBenchmark/optimizations.LoopVariableBenchmark.jar -C /tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/optimizations.LoopVariableBenchmark/classes ./[0G[Kinstalled action 0; 1 are runnable[0G[KAction optimizations.LoopVariableBenchmark
+executing java -classpath /Users/dougqh/Desktop/Development/NejugAndroid/net.dougqh.android.nejug/benchmarks-lib/vogar.jar:/tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/optimizations.LoopVariableBenchmark/optimizations.LoopVariableBenchmark.jar:/usr/share/java/bcprov.jar -Duser.dir=/tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/userDir/optimizations.LoopVariableBenchmark -Djava.io.tmpdir=/tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/userDir/optimizations.LoopVariableBenchmark vogar.target.TestRunner[0G[Krunning optimizations.LoopVariableBenchmark with unlimited timeout[0G[K     0% Scenario{vm=java, trial=0, benchmark=WithInsideLoopVariable, size=100} 76.85 ns; ?=4.56 ns @ 10 trials
+    17% Scenario{vm=java, trial=0, benchmark=WithOutsideLoopVariable, size=100} 77.04 ns; ?=5.13 ns @ 10 trials
+    33% Scenario{vm=java, trial=0, benchmark=WithoutLoopVariable, size=100} 84.49 ns; ?=10.14 ns @ 10 trials
+    50% Scenario{vm=java, trial=0, benchmark=WithInsideLoopVariable, size=10000} 7433.56 ns; ?=1542.70 ns @ 10 trials
+    67% Scenario{vm=java, trial=0, benchmark=WithOutsideLoopVariable, size=10000} 7547.10 ns; ?=543.51 ns @ 10 trials
+    83% Scenario{vm=java, trial=0, benchmark=WithoutLoopVariable, size=10000} 7056.65 ns; ?=98.96 ns @ 10 trials
+     size               benchmark     ns linear runtime
+      100  WithInsideLoopVariable   76.9 =
+      100 WithOutsideLoopVariable   77.0 =
+      100     WithoutLoopVariable   84.5 =
+    10000  WithInsideLoopVariable 7433.6 =============================
+    10000 WithOutsideLoopVariable 7547.1 ==============================
+    10000     WithoutLoopVariable 7056.7 ============================
+    vm: java
+    trial: 0
+  optimizations.LoopVariableBenchmark [32;1mOK (SUCCESS)[0m
+received exit value 0 from destroyed command java -classpath /Users/dougqh/Desktop/Development/NejugAndroid/net.dougqh.android.nejug/benchmarks-lib/vogar.jar:/tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/optimizations.LoopVariableBenchmark/optimizations.LoopVariableBenchmark.jar:/usr/share/java/bcprov.jar -Duser.dir=/tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/userDir/optimizations.LoopVariableBenchmark -Djava.io.tmpdir=/tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/userDir/optimizations.LoopVariableBenchmark vogar.target.TestRunner[0G[Kclean optimizations.LoopVariableBenchmark[0G[Kexecuting rm -rf /tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b/optimizations.LoopVariableBenchmark[0G[Kexecuting rm -rf /tmp/vogar/f27561c9-d193-46f5-8bb0-7c6d1182cf6b[0G[Kparsing outcomes from 0 files[0G[KOutcomes: 1. All successful. Took 1m40s.
+

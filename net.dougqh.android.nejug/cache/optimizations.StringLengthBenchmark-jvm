@@ -1,0 +1,9 @@
+ 0% Scenario{vm=java, trial=0, benchmark=String} 5.66 ns; ?=0.03 ns @ 3 trials
+50% Scenario{vm=java, trial=0, benchmark=StringBuilder} 5.81 ns; ?=0.12 ns @ 10 trials
+
+    benchmark   ns linear runtime
+       String 5.66 =============================
+StringBuilder 5.81 ==============================
+
+vm: java
+trial: 0

@@ -1,0 +1,12 @@
+ 0% Scenario{vm=java, trial=0, benchmark=WithInsideLoopVariable, size=1000} 714.57 ns; ?=31.19 ns @ 10 trials
+33% Scenario{vm=java, trial=0, benchmark=WithOutsideLoopVariable, size=1000} 728.39 ns; ?=52.79 ns @ 10 trials
+67% Scenario{vm=java, trial=0, benchmark=WithoutLoopVariable, size=1000} 761.23 ns; ?=65.87 ns @ 10 trials
+
+              benchmark  ns linear runtime
+ WithInsideLoopVariable 715 ============================
+WithOutsideLoopVariable 728 ============================
+    WithoutLoopVariable 761 ==============================
+
+vm: java
+trial: 0
+size: 1000

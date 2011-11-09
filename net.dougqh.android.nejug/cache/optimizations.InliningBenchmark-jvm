@@ -1,0 +1,11 @@
+ 0% Scenario{vm=java, trial=0, benchmark=FieldAccess} 1.40 ns; ?=0.03 ns @ 10 trials
+33% Scenario{vm=java, trial=0, benchmark=VirtualAccessors} 1.40 ns; ?=0.03 ns @ 10 trials
+67% Scenario{vm=java, trial=0, benchmark=InterfaceAccessors} 1.40 ns; ?=0.01 ns @ 4 trials
+
+         benchmark   ns linear runtime
+       FieldAccess 1.40 =============================
+  VirtualAccessors 1.40 ==============================
+InterfaceAccessors 1.40 =============================
+
+vm: java
+trial: 0

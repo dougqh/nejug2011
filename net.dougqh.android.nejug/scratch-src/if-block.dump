@@ -1,0 +1,46 @@
+reading Foo.class...
+method <init> ()V
+block 0000: 0000..0004
+  0000: aload_0 // 00
+  0001: invokespecial method{java.lang.Object.<init>:()V}
+  next 0004
+block 0004: 0004..0005
+  0004: return
+  returns
+
+method main ([Ljava/lang/String;)V
+block 0000: 0000..0005
+  0000: iconst_0 // #+00
+  0001: istore_1 // 01
+  0002: iload_1 // 01
+  0003: iconst_2 // #+02
+  0004: irem
+  next 0005
+block 0005: 0005..0008
+  0005: ifne 0013
+  next 0008
+  next 0013
+block 0008: 0008..000b
+  0008: getstatic field{java.lang.System.out:Ljava/io/PrintStream;}
+  next 000b
+block 000b: 000b..000d
+  000b: ldc string{"even"}
+  next 000d
+block 000d: 000d..0010
+  000d: invokevirtual method{java.io.PrintStream.println:(Ljava/lang/String;)V}
+  next 0010
+block 0010: 0010..0013
+  0010: goto 001b
+  next 001b
+block 0013: 0013..0016
+  0013: getstatic field{java.lang.System.out:Ljava/io/PrintStream;}
+  next 0016
+block 0016: 0016..0018
+  0016: ldc string{"odd"}
+  next 0018
+block 0018: 0018..001b
+  0018: invokevirtual method{java.io.PrintStream.println:(Ljava/lang/String;)V}
+  next 001b
+block 001b: 001b..001c
+  001b: return
+  returns

@@ -1,0 +1,9 @@
+ 0% Scenario{vm=java, trial=0, benchmark=Int} 8.66 ns; ?=0.40 ns @ 10 trials
+50% Scenario{vm=java, trial=0, benchmark=Enum} 18.79 ns; ?=1.20 ns @ 10 trials
+
+benchmark    ns linear runtime
+      Int  8.66 =============
+     Enum 18.79 ==============================
+
+vm: java
+trial: 0

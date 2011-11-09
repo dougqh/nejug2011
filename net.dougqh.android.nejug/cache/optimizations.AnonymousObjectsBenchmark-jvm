@@ -1,0 +1,14 @@
+ 0% Scenario{vm=java, trial=0, benchmark=Primitive, size=10000} 1186723.89 ns; ?=26802.10 ns @ 10 trials
+25% Scenario{vm=java, trial=0, benchmark=Boxed, size=10000} 2011668.13 ns; ?=51656.00 ns @ 10 trials
+50% Scenario{vm=java, trial=0, benchmark=BoxedSingletonComparator, size=10000} 2109927.70 ns; ?=107875.21 ns @ 10 trials
+75% Scenario{vm=java, trial=0, benchmark=BoxedWithAnonymousComparator, size=10000} 2062274.76 ns; ?=117006.40 ns @ 10 trials
+
+                   benchmark   ms linear runtime
+                   Primitive 1.19 ================
+                       Boxed 2.01 ============================
+    BoxedSingletonComparator 2.11 ==============================
+BoxedWithAnonymousComparator 2.06 =============================
+
+vm: java
+trial: 0
+size: 10000

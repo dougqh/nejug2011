@@ -1,0 +1,43 @@
+reading Foo.class...
+method <init> ()V
+block 0000: 0000..0004
+  0000: aload_0 // 00
+  0001: invokespecial method{java.lang.Object.<init>:()V}
+  next 0004
+block 0004: 0004..0005
+  0004: return
+  returns
+
+method main ([Ljava/lang/String;)V
+block 0000: 0000..0006
+  0000: aconst_null
+  0001: astore_1 // 01
+  0002: iconst_0 // #+00
+  0003: istore_2 // 02
+  0004: iconst_0 // #+00
+  0005: istore_3 // 03
+  next 0006
+block 0006: 0006..0009
+  0006: iload_3 // 03
+  0007: aload_1 // 01
+  0008: arraylength
+  next 0009
+block 0009: 0009..000c
+  0009: if_icmpge 0018
+  next 000c
+  next 0018
+block 000c: 000c..0010
+  000c: iload_2 // 02
+  000d: aload_1 // 01
+  000e: iload_3 // 03
+  000f: iaload
+  next 0010
+block 0010: 0010..0018
+  0010: iadd
+  0011: istore_2 // 02
+  0012: iinc 03, #+01
+  0015: goto 0006
+  next 0006
+block 0018: 0018..0019
+  0018: return
+  returns

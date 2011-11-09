@@ -1,0 +1,12 @@
+ 0% Scenario{vm=java, trial=0, benchmark=NewFor, size=1000} 687.07 ns; ?=6.51 ns @ 4 trials
+33% Scenario{vm=java, trial=0, benchmark=OldFor, size=1000} 698.32 ns; ?=9.22 ns @ 10 trials
+67% Scenario{vm=java, trial=0, benchmark=ManualHoisting, size=1000} 711.19 ns; ?=0.92 ns @ 3 trials
+
+     benchmark  ns linear runtime
+        NewFor 687 ============================
+        OldFor 698 =============================
+ManualHoisting 711 ==============================
+
+vm: java
+trial: 0
+size: 1000

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd" xmlns:y="http://www.yworks.com/xml/graphml"><key for="graphml" id="d0" yfiles.type="resources"></key><key attr.name="url" attr.type="string" for="node" id="d1"></key><key attr.name="description" attr.type="string" for="node" id="d2"></key><key for="node" id="d3" yfiles.type="nodegraphics"></key><key attr.name="url" attr.type="string" for="edge" id="d4"></key><key attr.name="description" attr.type="string" for="edge" id="d5"></key><key for="edge" id="d6" yfiles.type="edgegraphics"></key><graph id="G0" edgedefault="undirected"><node id="0000"><data key="d3"><y:ShapeNode><y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="30.0" x="0.0" y="0.0">aconst_null
+astore_1 // 01
+iconst_0 // 0x00
+istore_2 // 02
+iconst_0 // 0x00
+istore_3 // 03
+</y:NodeLabel></y:ShapeNode></data></node><node id="0006"><data key="d3"><y:ShapeNode><y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="30.0" x="0.0" y="0.0">iload_3 // 03
+aload_1 // 01
+arraylength
+</y:NodeLabel></y:ShapeNode></data></node><node id="0009"><data key="d3"><y:ShapeNode><y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="30.0" x="0.0" y="0.0">if_icmpge 0018
+</y:NodeLabel></y:ShapeNode></data></node><node id="000c"><data key="d3"><y:ShapeNode><y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="30.0" x="0.0" y="0.0">iload_2 // 02
+aload_1 // 01
+iload_3 // 03
+iaload
+</y:NodeLabel></y:ShapeNode></data></node><node id="0010"><data key="d3"><y:ShapeNode><y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="30.0" x="0.0" y="0.0">iadd
+istore_2 // 02
+iinc 03, 0x01
+goto 0006
+</y:NodeLabel></y:ShapeNode></data></node><node id="0018"><data key="d3"><y:ShapeNode><y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="30.0" x="0.0" y="0.0">return
+returns
+</y:NodeLabel></y:ShapeNode></data></node></graph><edge source="0000" target="0006" directed="true"><data key="d6"><y:PolyLineEdge><y:Arrows source="none" target="standard"></y:Arrows></y:PolyLineEdge></data></edge><edge source="0006" target="0009" directed="true"><data key="d6"><y:PolyLineEdge><y:Arrows source="none" target="standard"></y:Arrows></y:PolyLineEdge></data></edge><edge source="0009" target="000c" directed="true"><data key="d6"><y:PolyLineEdge><y:Arrows source="none" target="standard"></y:Arrows></y:PolyLineEdge></data></edge><edge source="0009" target="0018" directed="true"><data key="d6"><y:PolyLineEdge><y:Arrows source="none" target="standard"></y:Arrows></y:PolyLineEdge></data></edge><edge source="000c" target="0010" directed="true"><data key="d6"><y:PolyLineEdge><y:Arrows source="none" target="standard"></y:Arrows></y:PolyLineEdge></data></edge><edge source="0010" target="0006" directed="true"><data key="d6"><y:PolyLineEdge><y:Arrows source="none" target="standard"></y:Arrows></y:PolyLineEdge></data></edge></graphml>

@@ -1,0 +1,11 @@
+ 0% Scenario{vm=java, trial=0, benchmark=StringBuilder} 156.49 ns; ?=14.25 ns @ 10 trials
+33% Scenario{vm=java, trial=0, benchmark=IndividualLocks} 209.24 ns; ?=9.14 ns @ 10 trials
+67% Scenario{vm=java, trial=0, benchmark=LargerLock} 216.01 ns; ?=10.27 ns @ 10 trials
+
+      benchmark  ns linear runtime
+  StringBuilder 156 =====================
+IndividualLocks 209 =============================
+     LargerLock 216 ==============================
+
+vm: java
+trial: 0
